@@ -3,6 +3,7 @@ import cors from 'cors';
 import mysql from 'mysql2';
 import config from './config';
 import usersRouter from './routers/users';
+import fileRouter from './routers/file';
 
 const app = express();
 const port = 8000;
@@ -10,7 +11,8 @@ const port = 8000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
-app.use('/users', usersRouter);
+app.use('/', usersRouter);
+app.use('/file', fileRouter);
 
 app.get('*', (_, res) => res.sendStatus(404));
 
@@ -22,14 +24,10 @@ db.connect((err) => {
     return;
   }
 
-  db.query(
-    `
-    CREATE TABLE IF NOT EXISTS users (
-      id VARCHAR(40) PRIMARY KEY NOT NULL,
-      password VARCHAR(60) NOT NULL
-    );
-  `,
-  );
+  db.query(config.createUsersTableQuery);
+  db.query(config.createFilesTableQuery);
 
-  app.listen(port, () => console.log(`Server running at ${port} port...`));
+  console.log('Database connected.');
 });
+
+app.listen(port, () => console.log(`Server running at ${port} port...`));
