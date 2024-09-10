@@ -26,6 +26,7 @@ db.connect((err) => {
 
   db.query(config.createUsersTableQuery);
   db.query(config.createFilesTableQuery);
+  db.query(config.createTokensTableQuery);
 
   console.log('Database connected.');
 });
